@@ -17,6 +17,16 @@ const allowedOrigins = [
     "https://secondbrain-frontend-pst783q3r-pranays-projects-11125deb.vercel.app",
     "http://localhost:5173", // Add this if testing locally
   ];
+  app.use((req, res, next) => {
+    res.setHeader("Access-Control-Allow-Origin", "*"); // Change * to specific frontend domain if needed
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+    res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    res.setHeader("Access-Control-Allow-Credentials", "true"); // Allow cookies/sessions
+    if (req.method === "OPTIONS") {
+      return res.status(200).end(); // Respond to preflight requests
+    }
+    next();
+  });
   
   app.use(
     cors({
