@@ -8,6 +8,7 @@ interface PostingProps {
 }
 
 function NewContent({ posting, setPosting }: PostingProps) {
+  const API_URL = import.meta.env.VITE_API_URL;
   const [link, setLink] = useState("");
   const [title, setTitle] = useState("");
   const [type, setType] = useState("");
@@ -21,7 +22,7 @@ function NewContent({ posting, setPosting }: PostingProps) {
 
     try {
       const response = await axios.post(
-        "http://localhost:2000/secondBrain/content",
+        `${API_URL}/secondBrain/content`,
         { link, title, type },
         {
           headers: {

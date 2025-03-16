@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Signin = () => {
+  const API_URL = import.meta.env.VITE_API_URL;
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const navigate = useNavigate();
@@ -36,7 +37,7 @@ const Signin = () => {
             onClick={async () => {
               try {
                 const resp = await axios.post(
-                  "http://localhost:2000/secondBrain/user/in",
+                  `${API_URL}/secondBrain/user/in`,
                   { username, password }
                 );
                 const token = resp.data.TokenGenerated;

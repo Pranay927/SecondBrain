@@ -8,6 +8,8 @@ import Logout from "../Icons/Logout";
 import FileViewIcon from "../Icons/FileViewIcon";
 import GridViewIcon from "../Icons/GridViewIcon";
 
+const API_URL = import.meta.env.VITE_API_URL;  // ✅ Fix: Ensure this is set correctly
+
 type BrainType = {
   _id: string;
   link: string;
@@ -20,20 +22,21 @@ export default function Dashboard() {
   const [posting, setPosting] = useState(false);
   const [sharing, setSharing] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
-  const [shareId, setShareId] = useState(null);
-
+  const [shareId, setShareId] = useState<string | null>(null);
   const [view, setView] = useState<string>("grid");
+
   const navigate = useNavigate();
 
   useEffect(() => {
     const getContent = async () => {
-      const response = await axios.get(
-        "http://localhost:2000/secondBrain/content",
-        {
+      try {
+        const response = await axios.get(`${API_URL}/secondBrain/content`, {  // ✅ Fix: Removed duplicate URLs
           headers: { authorization: `${localStorage.getItem("token")}` },
-        }
-      );
-      setBrains(response.data["Your Brains"]);
+        });
+        setBrains(response.data["Your Brains"]);
+      } catch (error) {
+        console.error("Error fetching content:", error);
+      }
     };
     getContent();
   }, []);
@@ -42,7 +45,7 @@ export default function Dashboard() {
     const shareBrain = async () => {
       try {
         const resp = await axios.post(
-          "http://localhost:2000/secondBrain/brain/share",
+          `${API_URL}/secondBrain/brain/share`,  // ✅ Fix: Use API_URL instead of hardcoded localhost
           { share: true },
           {
             headers: { authorization: `${localStorage.getItem("token")}` },
@@ -50,7 +53,7 @@ export default function Dashboard() {
         );
         setShareId(resp.data["Share your secondBrain to your friends"]);
       } catch (e) {
-        console.log("Error from share : ", e);
+        console.error("Error from share:", e);
       }
     };
     shareBrain();
@@ -74,7 +77,7 @@ export default function Dashboard() {
                   <FileViewIcon className="hover:scale-110 transition-transform " />
                 </div>
                 <div className="hover:scale-110 transition-transform cursor-pointer">
-                  <GridViewIcon  />
+                  <GridViewIcon />
                 </div>
               </div>
             </div>
@@ -86,7 +89,7 @@ export default function Dashboard() {
                   link={b.link}
                   title={b.title}
                   type={b.type}
-                  view = {view} 
+                  view={view}
                 />
               ))}
             </div>

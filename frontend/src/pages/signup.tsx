@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 const Signup = () => {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const API_URL = import.meta.env.VITE_API_URL;
   const [error, setError] = useState<boolean>(false);
   const navigate = useNavigate();
 
@@ -39,7 +40,7 @@ const Signup = () => {
             className="bg-blue-500 px-16 py-2 rounded-3xl text-lg font-medium hover:bg-blue-600 transition-all"
             onClick={async () => {
               try {
-                await axios.post("http://localhost:2000/secondBrain/user/up", {
+                await axios.post(`${API_URL}/secondBrain/user/up`, {
                   username,
                   password,
                 });

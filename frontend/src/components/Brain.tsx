@@ -10,10 +10,12 @@ type Brainee = {
   link: string;
   title: string;
   type: string; // No strict types, accepts any string
-  view: "grid"|"list"
+  view: string
 };
 
 const Brain = ({ link, title, type, contentKey,view}: Brainee) => {
+  const API_URL = import.meta.env.VITE_API_URL;
+
   const [copy, setCopy] = useState(false);
   function getYoutubeEmbedLink(url: string): string {
     const match = url.match(
@@ -52,7 +54,7 @@ const Brain = ({ link, title, type, contentKey,view}: Brainee) => {
                 try {
                   console.log(contentKey);
                   await axios.delete(
-                    "http://localhost:2000/secondBrain/content/",
+                    `${API_URL}/secondBrain/content`,
                     {
                       data: {
                         contentId: contentKey, // Use the correct variable
