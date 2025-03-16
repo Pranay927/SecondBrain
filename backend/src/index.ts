@@ -3,6 +3,7 @@ const app = express();
 import mongoose from "mongoose";
 import cors from "cors"
 require('dotenv').config();
+const PORT = process.env.PORT || 2000; // Use Vercel's assigned port
 
 import user from './routes/user'
 import content from './routes/content'
@@ -30,7 +31,7 @@ const main = async () => {
             throw new Error("Please provide your MongoDB connection string in the .env file!");
         }
         await mongoose.connect(dbUrl);
-        app.listen(2000, ()=>{
+        app.listen(PORT, ()=>{
             console.log("Sever running on http://localhost:2000")
         })
 
