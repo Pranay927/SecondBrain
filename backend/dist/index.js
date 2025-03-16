@@ -16,19 +16,27 @@ const express_1 = __importDefault(require("express"));
 const app = (0, express_1.default)();
 const mongoose_1 = __importDefault(require("mongoose"));
 const cors_1 = __importDefault(require("cors"));
+require('dotenv').config();
 const user_1 = __importDefault(require("./routes/user"));
 const content_1 = __importDefault(require("./routes/content"));
 const brain_1 = __importDefault(require("./routes/brain"));
 const logger_1 = __importDefault(require("./middlewares/logger"));
+const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config();
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 app.use(logger_1.default);
 app.use("/secondBrain/user", user_1.default);
 app.use("/secondBrain/content", content_1.default);
 app.use("/secondBrain/brain", brain_1.default);
+const dbUrl = process.env.DB_URL;
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        yield mongoose_1.default.connect("mongodb+srv://Limitless:123123123@appledb.yhy8h.mongodb.net/SecondBrain?retryWrites=true&w=majority");
+        if (!dbUrl) {
+            console.log();
+            throw new Error("Please provide your MongoDB connection string in the .env file!");
+        }
+        yield mongoose_1.default.connect(dbUrl);
         app.listen(2000, () => {
             console.log("Sever running on http://localhost:2000");
         });

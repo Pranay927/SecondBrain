@@ -11,6 +11,7 @@ const auth = (req: Request, res: Response, next: NextFunction) =>{
             console.log(authorization)
             authorization = authorization?.split(' ')[1];
             if(!authorization) return res.status(403).json({error: "Unauthorized"})
+            if(secret===undefined) return;
             const decode = jwt.verify(authorization , secret);
             // use  authorization as string if not undefined
             

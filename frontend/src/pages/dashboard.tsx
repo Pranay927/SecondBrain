@@ -2,14 +2,12 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import SideBar from "../components/SideBar";
 import { useNavigate } from "react-router-dom";
-
 import Brain from "../components/Brain";
 import NewContent from "../components/NewContent";
-
 import Logout from "../Icons/Logout";
+import FileViewIcon from "../Icons/FileViewIcon";
+import GridViewIcon from "../Icons/GridViewIcon";
 
-
-// to store a new brain
 type BrainType = {
   _id: string;
   link: string;
@@ -21,19 +19,18 @@ export default function Dashboard() {
   const [brains, setBrains] = useState<BrainType[]>([]);
   const [posting, setPosting] = useState(false);
   const [sharing, setSharing] = useState(false);
-
   const [showMenu, setShowMenu] = useState(false);
   const [shareId, setShareId] = useState(null);
 
-  const navigate  = useNavigate();
+  const [view, setView] = useState<string>("grid");
+  const navigate = useNavigate();
+
   useEffect(() => {
     const getContent = async () => {
       const response = await axios.get(
         "http://localhost:2000/secondBrain/content",
         {
-          headers: {
-            authorization: `${localStorage.getItem("token")}`,
-          },
+          headers: { authorization: `${localStorage.getItem("token")}` },
         }
       );
       setBrains(response.data["Your Brains"]);
@@ -42,40 +39,46 @@ export default function Dashboard() {
   }, []);
 
   useEffect(() => {
-    try {
-      const f = async () => {
+    const shareBrain = async () => {
+      try {
         const resp = await axios.post(
           "http://localhost:2000/secondBrain/brain/share",
           { share: true },
           {
-            headers: {
-              authorization: `${localStorage.getItem("token")}`,
-            },
+            headers: { authorization: `${localStorage.getItem("token")}` },
           }
         );
         setShareId(resp.data["Share your secondBrain to your friends"]);
-      };
-      f();
-    } catch (e) {
-      console.log("Error from share : ");
-    }
+      } catch (e) {
+        console.log("Error from share : ", e);
+      }
+    };
+    shareBrain();
   }, []);
 
   return (
     <>
       {!posting && !sharing && (
-        <div className=" flex ">
-          {/* SIDEBAR */}
+        <div className="flex min-h-screen bg-gray-100">
           <SideBar />
 
-          {/* {Content _space} */}
-          <div
-            onClick={() => {
-              setShowMenu(false);
-            }}
-            className="w-[75%]  flex flex-wrap bg-gradient-to-br from-gray-400 to-neutral-400-300  gap-6 pt-3 pl-10 text-neutral-400 font font-semibold h-screen overflow-auto "
-          >
-            <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 w-full">
+          <div className="ml-[20%] flex flex-col w-[80%] p-6">
+            <div className="flex justify-between items-center mb-6">
+              <input
+                className="bg-gray-800 text-white rounded-full px-4 py-2 w-[60%] border border-gray-600 outline-none focus:ring-2 focus:ring-gray-400"
+                type="text"
+                placeholder="🔍 Search your brains..."
+              />
+              <div className="flex space-x-4">
+                <div className="cursor-pointer">
+                  <FileViewIcon className="hover:scale-110 transition-transform " />
+                </div>
+                <div className="hover:scale-110 transition-transform cursor-pointer">
+                  <GridViewIcon  />
+                </div>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 bg-white p-6 shadow-lg rounded-lg">
               {brains.map((b) => (
                 <Brain
                   key={b._id}
@@ -83,56 +86,42 @@ export default function Dashboard() {
                   link={b.link}
                   title={b.title}
                   type={b.type}
+                  view = {view} 
                 />
               ))}
             </div>
           </div>
 
-          {/* Three-dot button to toggle menu */}
-          <div className=" flex bg-neutral-100 flex-col justify-between items-center pt-4 gap-2">
+          <div className="flex flex-col items-center gap-4 p-4 bg-gray-200 shadow-md rounded-lg">
             <button
-              className="px-3 py-1 text-center rounded-full font-extrabold text-xl text-gray-900 hover:text-black"
+              className="text-2xl font-bold text-gray-900 hover:text-gray-700 transition-colors"
               onClick={() => setShowMenu(!showMenu)}
             >
               •••
             </button>
-            {/* Other UI Elements */}
-            <div
-              onClick={() => {
-                setShowMenu(false);
-              }}
-              className="flex flex-col justify-center items-center"
-            >
-              <div className="font-semibold cursor-pointer rounded-full hover:bg-slate-200 p-2"
-                  onClick={
-                    ()=>{
-                      localStorage.setItem("token","");
-                      navigate("/");
-                    }
-                  }>
+            <div className="flex flex-col items-center gap-2">
+              <div
+                className="p-2 rounded-full hover:bg-gray-300 cursor-pointer transition-colors"
+                onClick={() => {
+                  localStorage.setItem("token", "");
+                  navigate("/");
+                }}
+              >
                 <Logout />
               </div>
-              <div className="text-center pb-2 text-xl cursor-pointer">🌙</div>
+              <div className="text-xl cursor-pointer">🌙</div>
             </div>
-
-            {/* Dropdown menu */}
             {showMenu && (
-              <div className="absolute top-10 right-0 w-40 bg-gray-950 text-white rounded-lg shadow-lg p-2 flex flex-col gap-2 justify-between">
+              <div className="absolute top-14 right-4 w-40 bg-gray-900 text-white rounded-lg shadow-lg p-3 flex flex-col gap-2">
                 <div
                   className="cursor-pointer px-3 py-2 hover:bg-gray-800 rounded-md"
-                  onClick={() => {
-                    setPosting(true);
-                    setShowMenu(false);
-                  }}
+                  onClick={() => setPosting(true)}
                 >
                   Add Content
                 </div>
                 <div
                   className="cursor-pointer px-3 py-2 hover:bg-gray-800 rounded-md"
-                  onClick={() => {
-                    setSharing(true);
-                    setShowMenu(false);
-                  }}
+                  onClick={() => setSharing(true)}
                 >
                   Share
                 </div>
@@ -145,20 +134,15 @@ export default function Dashboard() {
       <NewContent posting={posting} setPosting={setPosting} />
 
       {sharing && (
-        <div className="flex justify-center items-center h-screen bg-neutral-100  ">
-          <div className="flex flex-col gap-2 shadow-2xl rounded-lg bg-neutral-100  pt-0 p-10 ">
-            <div className="text-center font-mono p-2 text-xl">
-              Share your brainId :{shareId}
-            </div>
-
-            <div className="flex justify-center items-center">
-              <button
-                className="px-2 text-neutral-200 bg-gray-700 font-mono font-semibold hover:scale-110 hover:outline-zinc-50"
-                onClick={() => setSharing(false)}
-              >
-                copy
-              </button>
-            </div>
+        <div className="fixed inset-0 flex justify-center items-center bg-gray-900 bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-xl text-center">
+            <p className="font-mono text-lg">Share your brainId: {shareId}</p>
+            <button
+              className="mt-4 px-4 py-2 bg-gray-700 text-white font-semibold rounded hover:bg-gray-600 transition"
+              onClick={() => setSharing(false)}
+            >
+              Copy
+            </button>
           </div>
         </div>
       )}

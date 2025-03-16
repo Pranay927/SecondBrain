@@ -10,9 +10,10 @@ type Brainee = {
   link: string;
   title: string;
   type: string; // No strict types, accepts any string
+  view: "grid"|"list"
 };
 
-const Brain = ({ link, title, type, contentKey}: Brainee) => {
+const Brain = ({ link, title, type, contentKey,view}: Brainee) => {
   const [copy, setCopy] = useState(false);
   function getYoutubeEmbedLink(url: string): string {
     const match = url.match(
@@ -29,15 +30,15 @@ const Brain = ({ link, title, type, contentKey}: Brainee) => {
 
   return (
     <div
-      className="lex flex-col bg-gray-100 shadow-md  
-  w-full h-auto min-h-[200px] max-h-[300px]  
+      className="flex flex-col bg-gray-100 shadow-md  
+   
   p-2 pt-1 transition-transform duration-400 ease-in-out hover:scale-105 ml-[-0.5rem ]"
     >
-      {!copy && (
+      {!copy && view == "grid" &&(
         <div>
-          <div className="flex justify-end px-1 pb-0 mb-0">
+          <div className="flex  justify-end px-1 pb-0 mb-0">
             <button
-              className="hover:scale-125 pr-1"
+              className="hover:scale-125 transition-transform pr-1"
               onClick={() => {
                 setCopy(true);
                 navigator.clipboard.writeText(link);
@@ -46,7 +47,7 @@ const Brain = ({ link, title, type, contentKey}: Brainee) => {
               <Copy />
             </button>
             <button
-              className="px-1 pr-2 hover:scale-105"
+              className="hover:scale-110 transition-transform bg-red-200 p-1 px-2 mx-2 rounded-md"
               onClick={async () => {
                 try {
                   console.log(contentKey);
@@ -70,9 +71,9 @@ const Brain = ({ link, title, type, contentKey}: Brainee) => {
               <DeleteIcon />
             </button>
 
-            <div className="flex font-bold text-md text-right text-black cursor-pointer max-w-fit">
+            <div className="flex font-bold text-md justify-center items-center text-black cursor-pointer max-w-fit">
               <div
-                className="transition-transform ease-in-out duration-300  rounded-md cursor-pointer font-mono bg-black text-white text-xs w-fit px-2 hover:scale-105"
+                className=" text-cernter transition-transform ease-in-out duration-300  rounded-md cursor-pointer font-mono bg-black text-white text-xs w-fit px-2 py-1 hover:scale-105"
                 onClick={() => {
                   window.open(link);
                 }}

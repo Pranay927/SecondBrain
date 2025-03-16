@@ -13,6 +13,8 @@ const auth = (req, res, next) => {
         authorization = authorization === null || authorization === void 0 ? void 0 : authorization.split(' ')[1];
         if (!authorization)
             return res.status(403).json({ error: "Unauthorized" });
+        if (config_1.secret === undefined)
+            return;
         const decode = jsonwebtoken_1.default.verify(authorization, config_1.secret);
         // use  authorization as string if not undefined
         // @ts-ignore -------fix this -----

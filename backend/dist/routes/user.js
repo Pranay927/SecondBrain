@@ -42,6 +42,8 @@ router.post("/in", (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             return res.status(413).json({ Error: "Invalid Credentials" });
         const isPassword = yield bcrypt_1.default.compare(password, user.password); // returns trur or false
         if (isPassword) {
+            if (config_1.secret === undefined)
+                return;
             const token = jsonwebtoken_1.default.sign({ id: user._id }, config_1.secret);
             return res.json({ TokenGenerated: token });
         }

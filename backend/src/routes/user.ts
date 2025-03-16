@@ -32,6 +32,7 @@ router.post("/in", async (req, res) => {
     const isPassword = await bcrypt.compare(password, user.password); // returns trur or false
 
     if (isPassword) {
+      if(secret === undefined) return;
       const token = jwt.sign({ id: user._id }, secret);
       return res.json({ TokenGenerated: token });
     }
