@@ -15,7 +15,7 @@ const auth = (req, res, next) => {
             return res.status(403).json({ error: "Unauthorized" });
         const decode = jsonwebtoken_1.default.verify(authorization, config_1.secret);
         // use  authorization as string if not undefined
-        // @ts-ignore
+        // @ts-ignore -------fix this -----
         req.id = decode.id;
         next();
     }

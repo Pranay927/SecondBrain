@@ -3,15 +3,16 @@ import Copy from "../Icons/Copy";
 import Logo from "../Icons/Logo";
 import { motion } from "framer-motion";
 import DeleteIcon from "../Icons/DeleteIcon";
+import axios from "axios";
 
 type Brainee = {
-  key: string;
+  contentKey: string;
   link: string;
   title: string;
   type: string; // No strict types, accepts any string
 };
 
-const Brain = ({ link, title, type }: Brainee) => {
+const Brain = ({ link, title, type, contentKey}: Brainee) => {
   const [copy, setCopy] = useState(false);
   function getYoutubeEmbedLink(url: string): string {
     const match = url.match(
@@ -29,8 +30,8 @@ const Brain = ({ link, title, type }: Brainee) => {
   return (
     <div
       className="lex flex-col bg-gray-100 shadow-md  
-  w-full h-auto min-h-[200px] max-h-[500px]  
-  p-2 pt-1 transition-transform duration-500 ease-in-out hover:scale-105"
+  w-full h-auto min-h-[200px] max-h-[300px]  
+  p-2 pt-1 transition-transform duration-400 ease-in-out hover:scale-105 ml-[-0.5rem ]"
     >
       {!copy && (
         <div>
@@ -44,9 +45,31 @@ const Brain = ({ link, title, type }: Brainee) => {
             >
               <Copy />
             </button>
-            <button>
+            <button
+              className="px-1 pr-2 hover:scale-105"
+              onClick={async () => {
+                try {
+                  console.log(contentKey);
+                  await axios.delete(
+                    "http://localhost:2000/secondBrain/content/",
+                    {
+                      data: {
+                        contentId: contentKey, // Use the correct variable
+                      },
+                      headers: {
+                        Authorization: localStorage.getItem("token"), // Correct spelling
+                      },
+                    }
+                  );
+                  console.log("Deleted successfully");
+                } catch (error) {
+                  console.error("Error deleting content:", error);
+                }
+              }}
+            >
               <DeleteIcon />
             </button>
+
             <div className="flex font-bold text-md text-right text-black cursor-pointer max-w-fit">
               <div
                 className="transition-transform ease-in-out duration-300  rounded-md cursor-pointer font-mono bg-black text-white text-xs w-fit px-2 hover:scale-105"

@@ -1,10 +1,13 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import SideBar from "../components/SideBar";
+import { useNavigate } from "react-router-dom";
 
 import Brain from "../components/Brain";
 import NewContent from "../components/NewContent";
-import Settings from "../Icons/Settings";
+
+import Logout from "../Icons/Logout";
+
 
 // to store a new brain
 type BrainType = {
@@ -21,6 +24,8 @@ export default function Dashboard() {
 
   const [showMenu, setShowMenu] = useState(false);
   const [shareId, setShareId] = useState(null);
+
+  const navigate  = useNavigate();
   useEffect(() => {
     const getContent = async () => {
       const response = await axios.get(
@@ -74,6 +79,7 @@ export default function Dashboard() {
               {brains.map((b) => (
                 <Brain
                   key={b._id}
+                  contentKey={b._id}
                   link={b.link}
                   title={b.title}
                   type={b.type}
@@ -97,8 +103,14 @@ export default function Dashboard() {
               }}
               className="flex flex-col justify-center items-center"
             >
-              <div className="font-semibold cursor-pointer rounded-full hover:bg-slate-200 p-2">
-                <Settings />
+              <div className="font-semibold cursor-pointer rounded-full hover:bg-slate-200 p-2"
+                  onClick={
+                    ()=>{
+                      localStorage.setItem("token","");
+                      navigate("/");
+                    }
+                  }>
+                <Logout />
               </div>
               <div className="text-center pb-2 text-xl cursor-pointer">🌙</div>
             </div>
