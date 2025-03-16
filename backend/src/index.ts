@@ -13,8 +13,21 @@ import logger from "./middlewares/logger";
 
 import dotenv from "dotenv"
 dotenv.config();
+const allowedOrigins = [
+    "https://secondbrain-frontend-pst783q3r-pranays-projects-11125deb.vercel.app",
+    "http://localhost:5173", // Add this if testing locally
+  ];
+  
+  app.use(
+    cors({
+      origin: allowedOrigins,
+      methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+      allowedHeaders: ["Content-Type", "Authorization"],
+      credentials: true, // Allow cookies/auth headers
+    })
+  );
 
-app.use(cors());
+
 app.use(express.json());
 app.use(logger);
 

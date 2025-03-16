@@ -98,7 +98,7 @@ export default function Dashboard() {
           <div className="flex flex-col items-center gap-4 p-4 bg-gray-200 shadow-md rounded-lg">
             <button
               className="text-2xl font-bold text-gray-900 hover:text-gray-700 transition-colors"
-              onClick={() => setShowMenu(!showMenu)}
+              onClick={() => {setShowMenu(!showMenu);setView("list")}}
             >
               •••
             </button>
